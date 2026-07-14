@@ -199,7 +199,7 @@ public class IndexController
 			session_selected_broadcaster = selectedBroadcaster;
 			session_selected_scenes = new ArrayList<Scene>();
 			if(!vizIPAddresss.trim().isEmpty() && vizPortNumber != null && vizPortNumber != 0) {			
-//				session_socket = new Socket(vizIPAddresss, Integer.valueOf(vizPortNumber));
+				session_socket = new Socket(vizIPAddresss, Integer.valueOf(vizPortNumber));
 				switch (session_selected_broadcaster.toUpperCase()) {
 				case FootballUtil.I_LEAGUE:
 					session_selected_scenes.add(new Scene(FootballUtil.I_LEAGUE_SCORE_BUG_SCENE_PATH,FootballUtil.ONE)); // Front layer
@@ -452,7 +452,7 @@ public class IndexController
 		return objectMapper.writeValueAsString(session_match);
 	}
 	
-	@RequestMapping(value = {"/processFootballProcedures"}, method={RequestMethod.GET,RequestMethod.POST})    
+	@RequestMapping(value = {"/processFootballProcedures.html"}, method={RequestMethod.GET,RequestMethod.POST})    
 	public @ResponseBody String processFootballProcedures(
 			@ModelAttribute("session_configurations") Configurations session_configurations,
 			@RequestParam(value = "whatToProcess", required = false, defaultValue = "") String whatToProcess,
@@ -1250,41 +1250,45 @@ public class IndexController
 					session_match.setXmlTimeSpan(new SimpleDateFormat("MMMM d, yyyy, HH:mm:ss 'GMT'").format(new File(FootballUtil.FOOTBALL_STATISTICS_DIRECTORY
 					        + FootballUtil.SPORTVUSTATISTIC + FootballUtil.XML_EXTENSION).lastModified()));
 				}
-				switch (session_selected_broadcaster) {
-				case FootballUtil.I_LEAGUE:
-					session_i_league.updateScoreBug(print_writers.get(0),session_selected_scenes,session_match);
-					break;
-				case FootballUtil.SANTOSH_TROPHY:
-					session_santosh_trophy.updateScoreBug(print_writers.get(0),session_selected_scenes, session_match);
-					break;
-				case FootballUtil.VIZ_SANTOSH_TROPHY:
-					session_viz_santosh_trophy.updateScoreBug(print_writers.get(0),session_selected_scenes, session_match,footballService);
-					break;
-				case FootballUtil.VIZ_TRI_NATION:
-					session_viz_tri_nation.updateScoreBug(print_writers.get(0),session_selected_scenes, session_match,footballService);
-					break;
-				case FootballUtil.SUPER_CUP:
-					session_super_cup.updateScoreBug(print_writers,session_selected_scenes, session_match,footballService);
-					break;
+				if(session_selected_broadcaster != null) {
+					switch (session_selected_broadcaster) {
+					case FootballUtil.I_LEAGUE:
+						session_i_league.updateScoreBug(print_writers.get(0),session_selected_scenes,session_match);
+						break;
+					case FootballUtil.SANTOSH_TROPHY:
+						session_santosh_trophy.updateScoreBug(print_writers.get(0),session_selected_scenes, session_match);
+						break;
+					case FootballUtil.VIZ_SANTOSH_TROPHY:
+						session_viz_santosh_trophy.updateScoreBug(print_writers.get(0),session_selected_scenes, session_match,footballService);
+						break;
+					case FootballUtil.VIZ_TRI_NATION:
+						session_viz_tri_nation.updateScoreBug(print_writers.get(0),session_selected_scenes, session_match,footballService);
+						break;
+					case FootballUtil.SUPER_CUP:
+						session_super_cup.updateScoreBug(print_writers,session_selected_scenes, session_match,footballService);
+						break;
+					}
 				}
 			}
 			
-			switch (session_selected_broadcaster) {
-			case FootballUtil.SUPER_CUP:
-				if (football != null) {
-			    	try {
-			    		synchronized (football) {
-			    			if(new File(FootballUtil.IN_MATCH).exists() && new File(FootballUtil.IN_MATCH).canRead()&& new File(FootballUtil.IN_MATCH).length() > 0) {
-			    				football = new ObjectMapper().readValue(new File(FootballUtil.IN_MATCH), Football.class);
-			    			}
+			if(session_selected_broadcaster != null) {
+				switch (session_selected_broadcaster) {
+				case FootballUtil.SUPER_CUP:
+					if (football != null) {
+				    	try {
+				    		synchronized (football) {
+				    			if(new File(FootballUtil.IN_MATCH).exists() && new File(FootballUtil.IN_MATCH).canRead()&& new File(FootballUtil.IN_MATCH).length() > 0) {
+				    				football = new ObjectMapper().readValue(new File(FootballUtil.IN_MATCH), Football.class);
+				    			}
+							}
+						} catch (Exception e) {
+							System.err.println("setJsonDataInMatchApi issue in this function" + e.getMessage());
 						}
-					} catch (Exception e) {
-						System.err.println("setJsonDataInMatchApi issue in this function" + e.getMessage());
-					}
-			    } else {
-			        System.err.println("api_session_match is null.");
-			    }
-				break;
+				    } else {
+				        System.err.println("api_session_match is null.");
+				    }
+					break;
+				}
 			}
 			
 			return objectMapper.writeValueAsString(session_match).toString();

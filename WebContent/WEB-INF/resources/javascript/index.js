@@ -2600,13 +2600,14 @@ function processFootballProcedures(whatToProcess, whichInput)
 				}
 				
 				if(data){
-					if($('#matchFileTimeStamp').val() != data.matchFileTimeStamp) {
-						document.getElementById('matchFileTimeStamp').value = data.matchFileTimeStamp;
-						session_match = data;
-						addItemsToList('LOAD_MATCH',data);
-						addItemsToList('LOAD_EVENTS',data);
-						document.getElementById('select_event_div').style.display = 'none';
-					}
+						if($('#matchFileTimeStamp').val() != data.matchFileTimeStamp) {
+							document.getElementById('matchFileTimeStamp').value = data.matchFileTimeStamp;
+							//session_match = data;
+							//addItemsToList('LOAD_MATCH',data);
+							//addItemsToList('LOAD_EVENTS',data);
+							//document.getElementById('select_event_div').style.display = 'none';
+						}
+					
 				}
 				break;
 			case 'POPULATE-SPONSOR_EURO':
@@ -7718,7 +7719,7 @@ function addItemsToList(whatToProcess, dataToProcess)
 					switch (option.id) {
 					case 'overwrite': case 'goal': case 'card': case 'stats':
 						
-						option.setAttribute('data-toggle', 'dropdown');
+						option.setAttribute('data-bs-toggle', 'dropdown');
 						option.setAttribute('aria-haspopup', 'true');
 						option.setAttribute('aria-expanded', 'false');					
 						
