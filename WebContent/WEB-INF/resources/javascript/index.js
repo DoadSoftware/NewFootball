@@ -1154,6 +1154,9 @@ function processUserSelection(whichInput)
 	case 'select_configuration_file':
 		processFootballProcedures('GET-CONFIG-DATA');
 		break;
+	case 'headToHead_file':
+		processFootballProcedures('HEAD_TO_HEAD_FILE');
+		break;
 	case 'selectStatsType':
 		switch ($('#selectedBroadcaster').val()) {
 		case 'I_LEAGUE':
@@ -2581,6 +2584,9 @@ function processFootballProcedures(whatToProcess, whichInput)
 			match_data = data;
 			//alert(whatToProcess);
         	switch(whatToProcess) {
+			case 'HEAD_TO_HEAD_FILE':
+				alert(data.matchFileName + ' H2H FILE IS CREATED');
+				break;
 			case 'GET-CONFIG-DATA':
 				initialiseForm('UPDATE-CONFIG',data);
 				break;

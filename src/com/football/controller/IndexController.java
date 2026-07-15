@@ -454,6 +454,7 @@ public class IndexController
 	
 	@RequestMapping(value = {"/processFootballProcedures.html"}, method={RequestMethod.GET,RequestMethod.POST})    
 	public @ResponseBody String processFootballProcedures(
+			@ModelAttribute("session_MasterFootballDirectory") String session_MasterFootballDirectory,
 			@ModelAttribute("session_configurations") Configurations session_configurations,
 			@RequestParam(value = "whatToProcess", required = false, defaultValue = "") String whatToProcess,
 			@RequestParam(value = "valueToProcess", required = false, defaultValue = "") String valueToProcess)
@@ -476,6 +477,8 @@ public class IndexController
 		}
 		
 		switch (whatToProcess.toUpperCase()) {
+		case "HEAD_TO_HEAD_FILE":
+            return handleHeadToHead(session_MasterFootballDirectory);
 		case "GET-CONFIG-DATA":
 			session_configurations = (Configurations)JAXBContext.newInstance(Configurations.class).createUnmarshaller().unmarshal(
 				new File(FootballUtil.FOOTBALL_DIRECTORY + FootballUtil.CONFIGURATIONS_DIRECTORY 
@@ -1331,5 +1334,9 @@ public class IndexController
 			}
 			return objectMapper.writeValueAsString(session_match).toString();
 		}
+	}
+	private String handleHeadToHead(String session_MasterFootballDirectory) throws Exception {
+	    FootballFunctions.exportMatchData(session_match, session_MasterFootballDirectory);
+	    return objectMapper.writeValueAsString(session_match);
 	}
 }
