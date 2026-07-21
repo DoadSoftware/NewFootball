@@ -126,8 +126,7 @@
 							          <option value="${match.name}">${match.name}</option>
 									</c:forEach>
 						      </select>
-						      <button style="background-color:#f44336;color:#FEFEFE;" class="btn btn-sm" type="button"
-		  						name="headToHead_file" id="headToHead_file" onclick="processUserSelection(this)"> Head To Head </button> 
+						      
 						    <button style="background-color:#2E008B;color:#FEFEFE;" class="btn btn-sm" type="button"
 						  		name="load_match_btn" id="load_match_btn" onclick="processUserSelection(this)">
 						  		<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none"></span>
@@ -141,6 +140,8 @@
 			  <div id="select_event_div" style="display:none;"></div>
 			  <div id="football_div" style="display:none;"></div>
            </div>
+           <button style="background-color:#f44336;color:#FEFEFE;" class="btn btn-sm" type="button"
+		  						name="headToHead_file" id="headToHead_file" onclick="processUserSelection(this)"> Head To Head </button> 
           </div>
          </div>
        </div>

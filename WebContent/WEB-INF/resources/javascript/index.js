@@ -7232,39 +7232,47 @@ function addItemsToList(whatToProcess, dataToProcess)
 								    option.text = hp.jersey_number + ' - ' + hp.full_name;
 								    select.appendChild(option);
 								});
-								dataToProcess.homeSubstitutes.forEach(function(hp,index,arr){
-									option = document.createElement('option');
-									option.value = hp.playerId;
-								    option.text = hp.jersey_number + ' - ' + hp.full_name;
-								    select.appendChild(option);
-								});
-								dataToProcess.homeOtherSquad.forEach(function(hs,index,arr){
-									option = document.createElement('option');
-									option.value = hs.playerId;
-								    option.text = hs.jersey_number + ' - ' + hs.full_name;
-								    select.appendChild(option);
-								});
+								if (dataToProcess.homeSubstitutes) {
+									dataToProcess.homeSubstitutes.forEach(function(hp,index,arr){
+										option = document.createElement('option');
+										option.value = hp.playerId;
+									    option.text = hp.jersey_number + ' - ' + hp.full_name;
+									    select.appendChild(option);
+									});
+								}
+								if (dataToProcess.homeOtherSquad) {
+									dataToProcess.homeOtherSquad.forEach(function(hs,index,arr){
+										option = document.createElement('option');
+										option.value = hs.playerId;
+									    option.text = hs.jersey_number + ' - ' + hs.full_name;
+									    select.appendChild(option);
+									});
+								}
 								
 							} else if (j==4) {
-								
 								dataToProcess.awaySquad.forEach(function(ap,index,arr){
 									option = document.createElement('option');
 									option.value = ap.playerId;
 								    option.text = ap.jersey_number + ' - ' + ap.full_name;
 								    select.appendChild(option);
 								});
-								dataToProcess.awaySubstitutes.forEach(function(ap,index,arr){
+								
+								if (dataToProcess.awaySubstitutes) {
+									dataToProcess.awaySubstitutes.forEach(function(ap,index,arr){
 									option = document.createElement('option');
 									option.value = ap.playerId;
 								    option.text = ap.jersey_number + ' - ' + ap.full_name;
 								    select.appendChild(option);
-								});
-								dataToProcess.awayOtherSquad.forEach(function(as,index,arr){
-									option = document.createElement('option');
-									option.value = as.playerId;
-								    option.text = as.jersey_number + ' - ' + as.full_name;
-								    select.appendChild(option);
-								});
+								});					
+								}
+								if (dataToProcess.awayOtherSquad) {
+									dataToProcess.awayOtherSquad.forEach(function(as,index,arr){
+										option = document.createElement('option');
+										option.value = as.playerId;
+									    option.text = as.jersey_number + ' - ' + as.full_name;
+									    select.appendChild(option);
+									});
+								}
 							}
 						    select.selectedIndex = i;
 							break;
@@ -7300,29 +7308,46 @@ function addItemsToList(whatToProcess, dataToProcess)
 								}
 							    select.appendChild(option);
 							}
-							if(i <= 10) {
-								switch(j) {
-								case 2: 
-									select.value = dataToProcess.homeSquad[i].captainGoalKeeper;
-									break;
-								case 5:
-									select.value = dataToProcess.awaySquad[i].captainGoalKeeper;
-									break;
-								}
-							}
-							if(i > 10 && (i-11) <= dataToProcess.homeSubstitutes.length -1){
-								switch(j) {
-								case 2:
-									select.value = dataToProcess.homeSubstitutes[i-11].captainGoalKeeper;
-									break;
-								}
-							}
-							if(i > 10 && (i-11) <= dataToProcess.awaySubstitutes.length -1){
-								switch(j) {
-								case 5:
-									select.value = dataToProcess.awaySubstitutes[i-11].captainGoalKeeper;
-									break;
-								}
+							if (i <= 10) {
+							    if (j == 2) {
+							        if (dataToProcess.setupHomeTeam) {
+							            dataToProcess.setupHomeTeam.split(",").forEach(function(ht) {
+							                if (ht.split("|")[0] == (i + 1)) {
+							                    (dataToProcess.homeSquad || []).forEach(function(hs) {
+							                        if (ht.split("|")[1] == hs.playerId) {
+							                            select.value = hs.captainGoalKeeper;
+							                        }
+							                    });
+							                }
+							            });
+							        }
+							    } else if (j == 5) {
+							        if (dataToProcess.setupAwayTeam) {
+							            dataToProcess.setupAwayTeam.split(",").forEach(function(at) {
+							                if (at.split("|")[0] == (i + 1)) {
+							                    (dataToProcess.awaySquad || []).forEach(function(as) {
+							                        if (at.split("|")[1] == as.playerId) {
+							                            select.value = as.captainGoalKeeper;
+							                        }
+							                    });
+							                }
+							            });
+							        }
+							    }
+							} else {
+							    if (j == 2) {
+							        (dataToProcess.homeSubstitutes || []).forEach(function(hs, index) {
+							            if (index == (i - 11)) {
+							                select.value = hs.captainGoalKeeper;
+							            }
+							        });
+							    } else if (j == 5) {
+							        (dataToProcess.awaySubstitutes || []).forEach(function(as, index) {
+							            if (index == (i - 11)) {
+							                select.value = as.captainGoalKeeper;
+							            }
+							        });
+							    }
 							}
 							break;
 						}
@@ -8072,10 +8097,12 @@ function addItemsToList(whatToProcess, dataToProcess)
 					}
 					switch(j){
 						case 1: case 3:
-							anchor.setAttribute('onclick','processUserSelection(this);');
-							//anchor.setAttribute('style','cursor: pointer;');
-							row.insertCell(j - 1).appendChild(anchor).appendChild(text);
-							break;
+						        anchor.setAttribute('href', 'javascript:void(0);');
+						        anchor.style.cursor = 'pointer';
+						        anchor.style.textDecoration = 'underline';
+						        anchor.setAttribute('onclick','processUserSelection(this);');
+						        row.insertCell(j - 1).appendChild(anchor).appendChild(text);
+						        break;
 						case 2: case 4:
 							row.insertCell(j - 1).appendChild(text);
 							break;
